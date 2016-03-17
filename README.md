@@ -2,7 +2,9 @@
 
 Unleash your inner power using Unleash Shell
 
-![Super Hero.](https://raw.githubusercontent.com/mertyildiran/Unleash/master/docs/img/super-hero.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mertyildiran/Unleash/master/docs/img/super-hero2.png" alt="Unleash Your Power"/>
+</p>
 
 ### Version
 
