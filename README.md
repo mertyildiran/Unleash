@@ -8,7 +8,27 @@ Unleash your inner power using Unleash Shell
 
 ### Version
 
-0.0.4
+0.0.6
+
+### Installation
+
+On the maintainer’s system(*Make sure you have automake installed*):
+
+```Shell
+aclocal # Set up an m4 environment
+autoconf # Generate configure from configure.ac
+automake --add-missing # Generate Makefile.in from Makefile.am
+./configure # Generate Makefile from Makefile.in
+make distcheck # Use Makefile to build and test a tarball to distribute
+```
+
+On the end-user’s system:
+
+```Shell
+./configure # Generate Makefile from Makefile.in
+make # Use Makefile to build the program
+make install # Use Makefile to install the program
+```
 
 ### License
 
