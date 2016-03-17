@@ -1,10 +1,10 @@
 # Unleash
 
-![Super Hero.](https://raw.githubusercontent.com/mertyildiran/Unleash/master/docs/img/super-hero.jpg)
+![Super Hero.](https://raw.githubusercontent.com/mertyildiran/Unleash/master/docs/img/super-hero.png)
 
 ### Version
 
-0.0.2
+0.0.3
 
 ### License
 

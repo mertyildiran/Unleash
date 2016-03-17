@@ -4,19 +4,29 @@
 #include <stdio.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <string.h>
 
-void unleash(void)
+const char * GetUsername()
 {
 	register struct passwd *pw;
 	register uid_t uid;
-	const char *USERNAME[100];
+	char *USERNAME[100];
 
 	uid = geteuid ();
 	pw = getpwuid (uid);
 	if (pw)
 	{
 		*USERNAME = pw->pw_name;
+		return *USERNAME;
 	}
+}
+
+void unleash(void)
+{
+	const char *USERNAME[100];
+
+	*USERNAME = GetUsername();
+
 	char command[20];
 	int status;
 	status = 1;
@@ -24,6 +34,10 @@ void unleash(void)
 	do {
 		printf("%s$ ", *USERNAME);
 		scanf("%s", command);
+		if (strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0) {
+			printf("%s\n", "You're a QUITTER!");
+			return;
+		}
 	} while (status);
 }
 
