@@ -1,10 +1,12 @@
 # Unleash
 
+Unleash your inner power using Unleash Shell
+
 ![Super Hero.](https://raw.githubusercontent.com/mertyildiran/Unleash/master/docs/img/super-hero.png)
 
 ### Version
 
-0.0.3
+0.0.4
 
 ### License
 

@@ -23,16 +23,19 @@ const char * GetUsername()
 
 void unleash(void)
 {
+	const char *HOSTNAME[150];
+	char _hostname[150];
 	const char *USERNAME[100];
+	char command[20];
+	int status = 1;
+
+	gethostname(_hostname, 150);
+	*HOSTNAME = _hostname;
 
 	*USERNAME = GetUsername();
 
-	char command[20];
-	int status;
-	status = 1;
-
 	do {
-		printf("%s$ ", *USERNAME);
+		printf("%s@%s:$ ", *USERNAME, *HOSTNAME);
 		scanf("%s", command);
 		if (strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0) {
 			printf("%s\n", "You're a QUITTER!");
