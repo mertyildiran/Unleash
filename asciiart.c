@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void AsciiArtPrinter()
+void AsciiArtPrinter(void)
 {
 
 		unsigned char ascii_art_txt[] = {

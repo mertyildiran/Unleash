@@ -21,11 +21,11 @@ char *reserved_cmds[] = {
 	"exit"
 };
 
-int UnleashReservedCmdCounter() {
+int UnleashReservedCmdCounter(void) {
 	return sizeof(reserved_cmds) / sizeof(char *);
 }
 
-const char * GetUsername()
+const char *GetUsername(void)
 {
 	register struct passwd *pw;
 	register uid_t uid;
@@ -40,7 +40,7 @@ const char * GetUsername()
 	}
 }
 
-const char * GetHomeDir()
+const char *GetHomeDir(void)
 {
 	struct passwd *pw = getpwuid(getuid());
 	const char *homedir = pw->pw_dir;
@@ -48,7 +48,7 @@ const char * GetHomeDir()
 }
 
 
-int UnleashHelp()
+int UnleashHelp(void)
 {
 	int i;
 	printf("-----------------------------------------------------------------------------\n");
@@ -65,6 +65,53 @@ int UnleashHelp()
 	return 1;
 }
 
+/*char ArgumentExtractor(char line[])
+{
+	char tokens[64][64];
+	char *pch;
+
+	int i = 0;
+	pch = strtok (line," ,.-");
+	while (pch != NULL)
+	{
+		strcpy(tokens[i],pch);
+		pch = strtok (NULL, " ,.-");
+		i++;
+	}
+	return tokens;
+
+}*/
+
+
+int ArgumentExtractor(char* string, char* argv[])
+{
+	char* p = string;
+	int argc = 0;
+
+	while(*p != '\0')
+	{
+		while(isspace(*p))
+			++p;
+
+		if(*p != '\0')
+			argv[argc++] = p;
+		else
+			break;
+
+		while(*p != '\0' && !isspace(*p))
+			p++;
+		if(*p != '\0')
+		{
+			*p = '\0';
+			++p;
+		}
+
+	}
+
+	return argc;
+}
+
+
 void Unleash(void)
 {
 	const char *HOSTNAME[150];
@@ -72,9 +119,10 @@ void Unleash(void)
 	const char *USERNAME[100];
 	const char *HOMEDIR[100];
 	char cwd[1024];
-	char command[20];
+	char command[50];
 	int status = 1;
 	char outcwd[1024];
+	char *args[1000];
 
 	AsciiArtPrinter();
 
@@ -96,8 +144,13 @@ void Unleash(void)
 		}
 
 		printf("%s@%s:%s$ ", *USERNAME, *HOSTNAME, outcwd);
-		scanf("%s", command);
-		//printf("%s", command);
+		fgets(command,150,stdin);
+		//gets(command);
+
+		int ac = ArgumentExtractor(command, args);
+		//printf("Length of array: %d\n", (int)( sizeof(&args) ));
+		//puts(&args[1]);
+		printf("%s\n",args[ac-1]);
 
 		if (strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0) {
 			printf("%s\n", "You're a QUITTER!");
