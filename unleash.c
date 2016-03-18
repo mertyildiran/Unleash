@@ -65,24 +65,6 @@ int UnleashHelp(void)
 	return 1;
 }
 
-/*char ArgumentExtractor(char line[])
-{
-	char tokens[64][64];
-	char *pch;
-
-	int i = 0;
-	pch = strtok (line," ,.-");
-	while (pch != NULL)
-	{
-		strcpy(tokens[i],pch);
-		pch = strtok (NULL, " ,.-");
-		i++;
-	}
-	return tokens;
-
-}*/
-
-
 int ArgumentExtractor(char* string, char* argv[])
 {
 	char* p = string;
@@ -93,6 +75,7 @@ int ArgumentExtractor(char* string, char* argv[])
 		while(isspace(*p))
 			++p;
 
+		if(*p == '#') break;
 		if(*p != '\0')
 			argv[argc++] = p;
 		else
@@ -150,13 +133,13 @@ void Unleash(void)
 		int ac = ArgumentExtractor(command, args);
 		//printf("Length of array: %d\n", (int)( sizeof(&args) ));
 		//puts(&args[1]);
-		printf("%s\n",args[ac-1]);
+		//printf("%s\n",args[ac-1]);
 
-		if (strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0) {
+		if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "quit") == 0) {
 			printf("%s\n", "You're a QUITTER!");
 			return;
 		}
-		else if(strcmp(command, "help") == 0) {
+		else if(strcmp(args[0], "help") == 0) {
 			UnleashHelp();
 		}
 

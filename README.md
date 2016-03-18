@@ -8,7 +8,7 @@ Unleash your inner power using Unleash Shell
 
 ### Version
 
-0.0.9
+0.1.0
 
 ### Installation
 
