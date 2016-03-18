@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include "asciiart.c"
 #define MAX_LEN 128
 
 char *reserved_cmds[] = {
@@ -46,32 +47,12 @@ const char * GetHomeDir()
 	return homedir;
 }
 
-void print_image(FILE *fptr);
-
-void print_image(FILE *fptr)
-{
-	char read_string[MAX_LEN];
-
-	while(fgets(read_string,sizeof(read_string),fptr) != NULL)
-		printf("%s",read_string);
-}
 
 int UnleashHelp()
 {
-	char *filename = "ascii-art.txt";
-	FILE *fptr = NULL;
-
-	if((fptr = fopen(filename,"r")) == NULL)
-	{
-		fprintf(stderr,"ASCII art loading failed!\n");
-	} else {
-		print_image(fptr);
-		fclose(fptr);
-	}
-
 	int i;
-	printf("--------------------------------------------------------------\n");
-	printf("WELCOME TO UNLEASH SHELL\n");
+	printf("-----------------------------------------------------------------------------\n");
+	printf("WELCOME TO UNLEASH SHELL HELP SECTION\n");
 	printf("Type program names and arguments, and hit enter.\n");
 	printf("The following commands are reserved:\n");
 
@@ -80,7 +61,7 @@ int UnleashHelp()
 	  }
 
 	printf("Use the man command for information on other programs.\n");
-	printf("--------------------------------------------------------------\n");
+	printf("-----------------------------------------------------------------------------\n");
 	return 1;
 }
 
@@ -94,6 +75,8 @@ void Unleash(void)
 	char command[20];
 	int status = 1;
 	char outcwd[1024];
+
+	AsciiArtPrinter();
 
 	gethostname(_hostname, 150);
 	*HOSTNAME = _hostname;
