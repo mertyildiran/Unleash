@@ -33,8 +33,8 @@ const char *GetUsername(void)
 	register uid_t uid;
 	char *USERNAME[100];
 
-	uid = geteuid ();
-	pw = getpwuid (uid);
+	uid = geteuid();
+	pw = getpwuid(uid);
 	if (pw)
 	{
 		*USERNAME = pw->pw_name;
@@ -99,6 +99,30 @@ int ArgumentExtractor(char* string, char* argv[])
 	return argc;
 }
 
+int UnleashExecute(char **args)
+{
+  pid_t pid;
+  int status;
+
+  pid = fork();
+  if (pid == 0) {
+	// Child process
+	if (execvp(args[0], args) == -1) {
+	  perror("Unleash");
+	}
+	exit(EXIT_FAILURE);
+  } else if (pid < 0) {
+	// Error forking
+	perror("Unleash");
+  } else {
+	// Parent process
+	do {
+	  waitpid(pid, &status, WUNTRACED);
+	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+  }
+
+  return 1;
+}
 
 void Unleash(void)
 {
@@ -150,6 +174,16 @@ void Unleash(void)
 			}
 			else if(strcmp(args[0], "help") == 0) {
 				UnleashHelp();
+			}
+			else if(strcmp(args[0], "who") == 0) {
+				time_t rawtime;
+				struct tm * timeinfo;
+				time ( &rawtime );
+				timeinfo = localtime ( &rawtime );
+				printf("%s        %s\n", *USERNAME, asctime(timeinfo));
+			}
+			else {
+				UnleashExecute(args);
 			}
 		}
 		else {
