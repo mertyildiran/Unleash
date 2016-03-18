@@ -12,13 +12,15 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <time.h>
 #include "asciiart.c"
 #define MAX_LEN 128
 
 char *reserved_cmds[] = {
-	"cd",
-	"help",
-	"exit"
+	"cd      Changes current working directory    $ cd ../dir/",
+	"help    Opens Help section",
+	"exit    Exits Unleash Shell",
+	"quit    Exits Unleash Shell"
 };
 
 int UnleashReservedCmdCounter(void) {
@@ -51,18 +53,21 @@ const char *GetHomeDir(void)
 int UnleashHelp(void)
 {
 	int i;
-	printf("-----------------------------------------------------------------------------\n");
-	printf("WELCOME TO UNLEASH SHELL HELP SECTION\n");
+	printf("WELCOME TO UNLEASH SHELL HELP SECTION\n\n");
 	printf("Type program names and arguments, and hit enter.\n");
-	printf("The following commands are reserved:\n");
+	printf("The following commands are reserved:\n\n");
 
 	for (i = 0; i < UnleashReservedCmdCounter(); i++) {
-		printf("  %s\n", reserved_cmds[i]);
+		printf("  %s\n\n", reserved_cmds[i]);
 	  }
 
 	printf("Use the man command for information on other programs.\n");
-	printf("-----------------------------------------------------------------------------\n");
 	return 1;
+}
+
+float RandomFloat(void)
+{
+	return (float)rand()/(RAND_MAX+1.0);
 }
 
 int ArgumentExtractor(char* string, char* argv[])
@@ -106,6 +111,7 @@ void Unleash(void)
 	int status = 1;
 	char outcwd[1024];
 	char *args[1000];
+	srand(time(NULL));
 
 	AsciiArtPrinter();
 
@@ -126,22 +132,43 @@ void Unleash(void)
 			outcwd[0] = '~';
 		}
 
-		printf("%s@%s:%s$ ", *USERNAME, *HOSTNAME, outcwd);
+		printf("%s@%s:%s| ", *USERNAME, *HOSTNAME, outcwd);
 		fgets(command,150,stdin);
 		//gets(command);
+
+		printf("-----------------------------------------------------------------------------\n");
 
 		int ac = ArgumentExtractor(command, args);
 		//printf("Length of array: %d\n", (int)( sizeof(&args) ));
 		//puts(&args[1]);
 		//printf("%s\n",args[ac-1]);
 
-		if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "quit") == 0) {
-			printf("%s\n", "You're a QUITTER!");
-			return;
+		if(ac > 0){
+			if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "quit") == 0) {
+				printf("%s\n", "You're a QUITTER!");
+				return;
+			}
+			else if(strcmp(args[0], "help") == 0) {
+				UnleashHelp();
+			}
 		}
-		else if(strcmp(args[0], "help") == 0) {
-			UnleashHelp();
+		else {
+			float r = RandomFloat();
+			if(r < 0.25) {
+				printf("%s\n", "What are you trying to do with empty commands?");
+			}
+			else if(r < 0.5){
+				printf("%s\n", "Are you serious?");
+			}
+			else if(r < 0.75){
+				printf("%s\n", "Full of emptiness...");
+			}
+			else {
+				printf("%s\n", "You gotta be kidding me.");
+			}
 		}
+
+		printf("-----------------------------------------------------------------------------\n");
 
 	} while (status);
 }
