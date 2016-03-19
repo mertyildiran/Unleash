@@ -92,7 +92,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_unleash_OBJECTS = unleash.$(OBJEXT) asciiart.$(OBJEXT)
+am_unleash_OBJECTS = unleash.$(OBJEXT)
 unleash_OBJECTS = $(am_unleash_OBJECTS)
 unleash_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
@@ -177,7 +177,7 @@ AUTOMAKE = ${SHELL} /home/mertyildiran/Documents/Unleash/missing automake-1.14
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -O0
 CPPFLAGS = 
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"unleash\" -DPACKAGE_TARNAME=\"unleash\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"unleash\ 0.1\" -DPACKAGE_BUGREPORT=\"mert.yildiran@bil.omu.edu.tr\" -DPACKAGE_URL=\"\" -DPACKAGE=\"unleash\" -DVERSION=\"0.1\"
@@ -253,7 +253,8 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
-unleash_SOURCES = unleash.c asciiart.c
+unleash_SOURCES = unleash.c
+CXXFLAGS = -O0
 all: all-am
 
 .SUFFIXES:
@@ -345,7 +346,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/asciiart.Po
 include ./$(DEPDIR)/unleash.Po
 
 .c.o:

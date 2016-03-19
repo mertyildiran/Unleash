@@ -13,7 +13,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
-#include "asciiart.h"
+#include "asciiart.c"
+#include "who.c"
 #define MAX_LEN 128
 
 char *reserved_cmds[] = {
@@ -176,11 +177,7 @@ void Unleash(void)
 				UnleashHelp();
 			}
 			else if(strcmp(args[0], "who") == 0) {
-				time_t rawtime;
-				struct tm * timeinfo;
-				time ( &rawtime );
-				timeinfo = localtime ( &rawtime );
-				printf("%s        %s\n", *USERNAME, asctime(timeinfo));
+				Who();
 			}
 			else {
 				UnleashExecute(args);

@@ -92,7 +92,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_unleash_OBJECTS = unleash.$(OBJEXT) asciiart.$(OBJEXT)
+am_unleash_OBJECTS = unleash.$(OBJEXT)
 unleash_OBJECTS = $(am_unleash_OBJECTS)
 unleash_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -177,7 +177,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = -O0
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -253,7 +253,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-unleash_SOURCES = unleash.c asciiart.c
+unleash_SOURCES = unleash.c
+CXXFLAGS = -O0
 all: all-am
 
 .SUFFIXES:
@@ -345,7 +346,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asciiart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unleash.Po@am__quote@
 
 .c.o:
