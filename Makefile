@@ -92,7 +92,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_unleash_OBJECTS = unleash.$(OBJEXT)
+am_unleash_OBJECTS = unleash.$(OBJEXT) asciiart.$(OBJEXT)
 unleash_OBJECTS = $(am_unleash_OBJECTS)
 unleash_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
@@ -253,7 +253,7 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
-unleash_SOURCES = unleash.c
+unleash_SOURCES = unleash.c asciiart.c
 all: all-am
 
 .SUFFIXES:
@@ -345,6 +345,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/asciiart.Po
 include ./$(DEPDIR)/unleash.Po
 
 .c.o:

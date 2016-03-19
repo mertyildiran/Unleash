@@ -13,7 +13,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
-#include "asciiart.c"
+#include "asciiart.h"
 #define MAX_LEN 128
 
 char *reserved_cmds[] = {
