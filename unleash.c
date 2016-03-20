@@ -23,6 +23,8 @@
 pid_t pidStack[MAX_PID];
 int pidStep = 0;
 char pidCommands[64][1000];
+pid_t pidShell;
+int shell_terminal = STDIN_FILENO;
 
 char *reserved_cmds[] = {
 	"cd      Changes current working directory    $ cd ../dir/",
@@ -30,6 +32,7 @@ char *reserved_cmds[] = {
 	"who     Displays a list of users who are currently logged into the computer",
 	"jobs    Lists currently alive processes with their states",
 	"fg      Continues all stacked child processes in foreground",
+	"bg      Continues all stacked child processes in background",
 	"exit    Exits Unleash Shell",
 	"quit    Exits Unleash Shell"
 };
@@ -116,9 +119,7 @@ int ArgumentExtractor(char* string, char* argv[])
 			*p = '\0';
 			++p;
 		}
-
 	}
-
 	return argc;
 }
 
@@ -143,10 +144,26 @@ void UnleashFg(void)
 		int n;
 		for (n = 0; pidStep > n; n++)
 		{
+			tcsetpgrp (shell_terminal, 0);
 			kill(pidStack[n], SIGCONT);
 		}
 	} else {
 		printf("No job. Maybe Steve Wozniak?\n");
+	}
+}
+
+void UnleashBg(void)
+{
+	if (pidStep > 0) {
+		int n;
+		for (n = 0; pidStep > n; n++)
+		{
+			pidShell = getpgid(0);
+			setpgid (pidStack[n], pidShell);
+			kill(pidStack[n], SIGCONT);
+		}
+	} else {
+		printf("No job. Maybe Bill Gates?\n");
 	}
 }
 
@@ -204,7 +221,6 @@ int UnleashExecute(char **args, char *command)
 		pidStep--;
 	}
   }
-
   return 1;
 }
 
@@ -253,7 +269,7 @@ void Unleash(void)
 
 		if(ac > 0){
 			if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "quit") == 0) {
-				printf("%s\n\n", "You're a QUITTER!");
+				printf("Hey, %s you're a QUITTER!\n\n", *USERNAME);
 				return;
 			}
 			else if(strcmp(args[0], "help") == 0) {
@@ -270,6 +286,9 @@ void Unleash(void)
 			}
 			else if(strcmp(args[0], "fg") == 0) {
 				UnleashFg();
+			}
+			else if(strcmp(args[0], "bg") == 0) {
+				UnleashBg();
 			}
 			else {
 				UnleashExecute(args, command);
