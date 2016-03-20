@@ -33,6 +33,7 @@ char *reserved_cmds[] = {
 	"jobs    Lists currently alive processes with their states",
 	"fg      Continues all stacked child processes in foreground",
 	"bg      Continues all stacked child processes in background",
+	"killall Kills all stacked child processes",
 	"exit    Exits Unleash Shell",
 	"quit    Exits Unleash Shell"
 };
@@ -77,6 +78,11 @@ int UnleashHelp(void)
 
 	printf("Use the man command for information on other programs.\n");
 	return 1;
+}
+
+void UnleashAuthor(void)
+{
+	printf("Mehmet Mert Yildiran        mert.yildiran@bil.omu.edu.tr        http://mertyildiran.com/\n");
 }
 
 float RandomFloat(void)
@@ -167,6 +173,23 @@ void UnleashBg(void)
 	}
 }
 
+void UnleashKillAll(void)
+{
+	if (pidStep > 0) {
+		int n;
+		for (n = 0; pidStep > n; n++)
+		{
+			kill(pidStack[n], SIGKILL);
+			printf("Process with PID: %d brutally killed. It was created by this command: %s\n", pidStack[n], pidCommands[n]);
+			pidStack[n] = 0;
+			strcpy(pidCommands[n], "");
+		}
+		pidStep = 0;
+	} else {
+		printf("No job. Are you trying to kill a CEO?\n");
+	}
+}
+
 void UnleashJobs(void)
 {
 	if (pidStep > 0) {
@@ -186,7 +209,7 @@ void UnleashJobs(void)
 			printf("%16d%16s%16s\n", pidStack[n], status_str, pidCommands[n]);
 		}
 	} else {
-		printf("No job. Maybe Steve Jobs?\n");
+		printf("No job. Maybe Steve Job?\n");
 	}
 }
 
@@ -289,6 +312,12 @@ void Unleash(void)
 			}
 			else if(strcmp(args[0], "bg") == 0) {
 				UnleashBg();
+			}
+			else if(strcmp(args[0], "killall") == 0) {
+				UnleashKillAll();
+			}
+			else if(strcmp(args[0], "author") == 0) {
+				UnleashAuthor();
 			}
 			else {
 				UnleashExecute(args, command);
