@@ -13,15 +13,18 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include  <signal.h>
 #include "asciiart.c"
 #include "who.c"
 #define MAX_LEN 128
+
+pid_t pidStack[64];
 
 char *reserved_cmds[] = {
 	"cd      Changes current working directory    $ cd ../dir/",
 	"help    Opens Help section",
 	"who     displays a list of users who are currently logged into the computer",
-	"cd      change the current working directory",
+	"cd      changes the current working directory",
 	"exit    Exits Unleash Shell",
 	"quit    Exits Unleash Shell"
 };
@@ -114,6 +117,12 @@ int ArgumentExtractor(char* string, char* argv[])
 	return argc;
 }
 
+void  SIGTSTPhandler(int sig)
+{
+	 kill(pidStack[0], SIGSTOP);
+	 printf("\nProcess with PID: %d stopped.\n", pidStack[0]);
+}
+
 int UnleashExecute(char **args)
 {
   pid_t pid;
@@ -132,8 +141,10 @@ int UnleashExecute(char **args)
   } else {
 	// Parent process
 	do {
+	  pidStack[0] = pid;
+	  signal(SIGTSTP, SIGTSTPhandler);
 	  waitpid(pid, &status, WUNTRACED);
-	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	} while (!WIFEXITED(status) && !WIFSIGNALED(status) && !WIFSTOPPED(status));
   }
 
   return 1;
@@ -175,7 +186,7 @@ void Unleash(void)
 		fgets(command,150,stdin);
 		//gets(command);
 
-		printf("-----------------------------------------------------------------------------\n");
+		printf("_____________________________________________________________________________\n\n");
 
 		int ac = ArgumentExtractor(command, args);
 		//printf("Length of array: %d\n", (int)( sizeof(&args) ));
@@ -184,7 +195,7 @@ void Unleash(void)
 
 		if(ac > 0){
 			if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "quit") == 0) {
-				printf("%s\n", "You're a QUITTER!");
+				printf("%s\n\n", "You're a QUITTER!");
 				return;
 			}
 			else if(strcmp(args[0], "help") == 0) {
@@ -217,7 +228,7 @@ void Unleash(void)
 		}
 
 		//free(args);
-		printf("-----------------------------------------------------------------------------\n");
+		printf("_____________________________________________________________________________\n\n");
 
 	} while (status);
 }

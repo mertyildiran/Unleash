@@ -561,5 +561,5 @@ void AsciiArtPrinter(void)
 
 	printf("%s", ascii_art_txt);
 	printf("                  You have UNLEASHED your inner power!\n");
-	printf("-----------------------------------------------------------------------------\n");
+	printf("_____________________________________________________________________________\n\n");
 }

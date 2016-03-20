@@ -8,7 +8,7 @@ Unleash your inner power using Unleash Shell
 
 ### Version
 
-0.1.6
+0.1.7
 
 ### Installation
 
@@ -28,7 +28,10 @@ On the end-user’s system:
 ./configure # Generate Makefile from Makefile.in
 make # Use Makefile to build the program
 make install # Use Makefile to install the program
+unleash
 ```
+
+**CAUTION:** Unleash's development state currently on Alpha state. There are some minor memory leaking issues that haven't been fixed yet. Additionally, the developer of Unleash is not an expert on C programming. The program's itself developed as an educational material. So, don't use Unleash as your default shell!
 
 ### License
 
