@@ -13,7 +13,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
-#include  <signal.h>
+#include <signal.h>
+#include <errno.h>
 #include "asciiart.c"
 #include "who.c"
 #define MAX_LEN 128
@@ -26,8 +27,8 @@ char pidCommands[64][1000];
 char *reserved_cmds[] = {
 	"cd      Changes current working directory    $ cd ../dir/",
 	"help    Opens Help section",
-	"who     displays a list of users who are currently logged into the computer",
-	"cd      changes the current working directory",
+	"who     Displays a list of users who are currently logged into the computer",
+	"jobs    Lists currently alive processes with their states",
 	"exit    Exits Unleash Shell",
 	"quit    Exits Unleash Shell"
 };
@@ -128,8 +129,34 @@ void  SIGTSTPhandler(int sig)
 
 void  SIGINThandler(int sig)
 {
-	 kill(pidStack[pidStep-1], SIGINT);
+	 kill(pidStack[pidStep-1], SIGTERM);
 	 printf("\nProcess with PID: %d terminated. It was created by this command: %s\n", pidStack[pidStep-1], pidCommands[pidStep-1]);
+	 pidStack[pidStep] = 0;
+	 strcpy(pidCommands[pidStep], "");
+	 pidStep--;
+}
+
+void UnleashJobs(void)
+{
+	if (pidStep > 0) {
+		printf("%16s%16s%16s\n", "PID", "STATUS", "COMMAND");
+		int n;
+		int status;
+		char status_str[20];
+		for (n = 0; pidStep > n; n++)
+		{
+			if (kill(pidStack[n], 0) == 0) {
+				strcpy(status_str, "stopped");
+			} else if (errno == ESRCH) {
+				strcpy(status_str, "running");
+			} else {
+				strcpy(status_str, "something very bad happened to this process");
+			}
+			printf("%16d%16s%16s\n", pidStack[n], status_str, pidCommands[n]);
+		}
+	} else {
+		printf("No job. Maybe Steve job?\n");
+	}
 }
 
 int UnleashExecute(char **args, char *command)
@@ -157,7 +184,7 @@ int UnleashExecute(char **args, char *command)
 	  signal(SIGINT, SIGINThandler);
 	  waitpid(pid, &status, WUNTRACED);
 	} while (!WIFEXITED(status) && !WIFSIGNALED(status) && !WIFSTOPPED(status));
-	if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+	if (WIFEXITED(status)) {
 		pidStack[pidStep] = 0;
 		strcpy(pidCommands[pidStep], "");
 		pidStep--;
@@ -223,6 +250,9 @@ void Unleash(void)
 			}
 			else if(strcmp(args[0], "cd") == 0) {
 				UnleashChangeDir(args);
+			}
+			else if(strcmp(args[0], "jobs") == 0) {
+				UnleashJobs();
 			}
 			else {
 				UnleashExecute(args, command);
