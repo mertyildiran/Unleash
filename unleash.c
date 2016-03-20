@@ -3,7 +3,7 @@
 	@author 			Mehmet Mert Yildiran	mert.yildiran@bil.omu.edu.tr
 	@date				Thursday, March 17, 2016
 	@brief				Main program of Unleash Shell
-	@reservedcommands	help, exit, cd
+	@reservedcommands	cd, help, who, jobs, fg, bg, killall, exit, quit
 ************************************************************************/
 #define _PROGRAM_NAME "unleash"
 #include <stdlib.h>
@@ -29,6 +29,7 @@ char *reserved_cmds[] = {
 	"help    Opens Help section",
 	"who     Displays a list of users who are currently logged into the computer",
 	"jobs    Lists currently alive processes with their states",
+	"fg      Continues all stacked child processes in foreground",
 	"exit    Exits Unleash Shell",
 	"quit    Exits Unleash Shell"
 };
@@ -136,6 +137,19 @@ void  SIGINThandler(int sig)
 	 pidStep--;
 }
 
+void UnleashFg(void)
+{
+	if (pidStep > 0) {
+		int n;
+		for (n = 0; pidStep > n; n++)
+		{
+			kill(pidStack[n], SIGCONT);
+		}
+	} else {
+		printf("No job. Maybe Steve Wozniak?\n");
+	}
+}
+
 void UnleashJobs(void)
 {
 	if (pidStep > 0) {
@@ -155,7 +169,7 @@ void UnleashJobs(void)
 			printf("%16d%16s%16s\n", pidStack[n], status_str, pidCommands[n]);
 		}
 	} else {
-		printf("No job. Maybe Steve job?\n");
+		printf("No job. Maybe Steve Jobs?\n");
 	}
 }
 
@@ -253,6 +267,9 @@ void Unleash(void)
 			}
 			else if(strcmp(args[0], "jobs") == 0) {
 				UnleashJobs();
+			}
+			else if(strcmp(args[0], "fg") == 0) {
+				UnleashFg();
 			}
 			else {
 				UnleashExecute(args, command);
