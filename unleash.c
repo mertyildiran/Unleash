@@ -17,8 +17,11 @@
 #include "asciiart.c"
 #include "who.c"
 #define MAX_LEN 128
+#define MAX_PID 64
 
-pid_t pidStack[64];
+pid_t pidStack[MAX_PID];
+int pidStep = 0;
+char pidCommands[64][1000];
 
 char *reserved_cmds[] = {
 	"cd      Changes current working directory    $ cd ../dir/",
@@ -119,11 +122,17 @@ int ArgumentExtractor(char* string, char* argv[])
 
 void  SIGTSTPhandler(int sig)
 {
-	 kill(pidStack[0], SIGSTOP);
-	 printf("\nProcess with PID: %d stopped.\n", pidStack[0]);
+	 kill(pidStack[pidStep-1], SIGSTOP);
+	 printf("\nProcess with PID: %d stopped. It was created by this command: %s\n", pidStack[pidStep-1], pidCommands[pidStep-1]);
 }
 
-int UnleashExecute(char **args)
+void  SIGINThandler(int sig)
+{
+	 kill(pidStack[pidStep-1], SIGINT);
+	 printf("\nProcess with PID: %d terminated. It was created by this command: %s\n", pidStack[pidStep-1], pidCommands[pidStep-1]);
+}
+
+int UnleashExecute(char **args, char *command)
 {
   pid_t pid;
   int status;
@@ -140,11 +149,19 @@ int UnleashExecute(char **args)
 	perror("Unleash");
   } else {
 	// Parent process
+	pidStack[pidStep] = pid;
+	strcpy(pidCommands[pidStep], command);
+	pidStep++;
 	do {
-	  pidStack[0] = pid;
 	  signal(SIGTSTP, SIGTSTPhandler);
+	  signal(SIGINT, SIGINThandler);
 	  waitpid(pid, &status, WUNTRACED);
 	} while (!WIFEXITED(status) && !WIFSIGNALED(status) && !WIFSTOPPED(status));
+	if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+		pidStack[pidStep] = 0;
+		strcpy(pidCommands[pidStep], "");
+		pidStep--;
+	}
   }
 
   return 1;
@@ -208,7 +225,7 @@ void Unleash(void)
 				UnleashChangeDir(args);
 			}
 			else {
-				UnleashExecute(args);
+				UnleashExecute(args, command);
 			}
 		}
 		else {
