@@ -161,6 +161,7 @@ void Unleash(void)
 	*HOMEDIR = GetHomeDir();
 
 	do {
+		char *args[1000] = {};
 		getcwd(cwd, sizeof(cwd));
 		if (strstr(cwd, *HOMEDIR) != NULL) {
 			int homelen = strlen(*HOMEDIR);
